@@ -3,12 +3,13 @@ const { SlashCommandBuilder } = require("discord.js");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("ping")
-        .setDescription("tells you thomas is gay and how bad your internet is"),
+        .setDescription("Replies with the bot's ping."),
     async execute(interaction) {
-        await interaction.reply(
-            "thomas is gay. your ping is " +
-                (Date.now() - interaction.createdTimestamp) +
-                "ms, your probably using a potato as a router"
-        );
+        const sent = await interaction.reply({
+            content: "Pinging...",
+            fetchReply: true,
+        });
+        const timeDiff = sent.createdTimestamp - interaction.createdTimestamp;
+        await interaction.editReply(`Pong! Responded in ${timeDiff}ms`);
     },
 };
