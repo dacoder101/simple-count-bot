@@ -1,0 +1,30 @@
+{
+    "name": "simple-count-bot",
+    "version": "1.0.0",
+    "description": "count bot for discord",
+    "main": "index.js",
+    "scripts": {
+        "start": "nodemon index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dacoder/simple-count-bot.git"
+    },
+    "keywords": [
+        "math",
+        "count",
+        "text",
+        "discord"
+    ],
+    "author": "dacoder101",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/dacoder/simple-count-bot/issues"
+    },
+    "homepage": "https://github.com/dacoder/simple-count-bot#readme",
+    "dependencies": {
+        "discord.js": "^14.15.3",
+        "dotenv": "^16.4.5",
+        "nodemon": "^3.1.4"
+    }
+}
