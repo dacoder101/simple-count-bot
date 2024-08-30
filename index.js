@@ -14,6 +14,10 @@ const client = new Client({
     ],
 });
 
+async function fetchCache(key) {
+    return await client.channels.fetch(key);
+}
+
 client.commands = new Collection();
 
 const foldersPath = path.join(__dirname, "commands");
@@ -62,6 +66,16 @@ client.on(Events.InteractionCreate, async (interaction) => {
             content: "There was an error while executing this command!",
             ephemeral: true,
         });
+    }
+});
+
+client.on(Events.MessageCreate, async (message) => {
+    if (message.content.startsWith("!") || message.author.bot) return;
+
+    let countingChannel = 1278189225275297845;
+
+    if (message.channelId == countingChannel) {
+        await message.reply("hi");
     }
 });
 
