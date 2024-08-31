@@ -1,6 +1,10 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
+
+const { Count } = require("./count.js");
+const { checkChars } = require("./func.js");
+
 require("dotenv").config();
 
 TOKEN = process.env.TOKEN;
@@ -11,12 +15,9 @@ const client = new Client({
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.MessageContent,
     ],
 });
-
-async function fetchCache(key) {
-    return await client.channels.fetch(key);
-}
 
 client.commands = new Collection();
 
@@ -69,13 +70,34 @@ client.on(Events.InteractionCreate, async (interaction) => {
     }
 });
 
-client.on(Events.MessageCreate, async (message) => {
-    if (message.content.startsWith("!") || message.author.bot) return;
+counter = new Count(0, "base-10");
 
+client.on(Events.MessageCreate, async (message) => {
     let countingChannel = 1278189225275297845;
 
     if (message.channelId == countingChannel) {
-        await message.reply("hi");
+        if (!checkChars(message.content)) {
+            return;
+        }
+
+        if (message.content == counter.count + 1) {
+            if (counter.lastUser == message.author.id) {
+                message.react("❌");
+                message.reply("You can't count twice in a row!");
+                counter.count = 0;
+                counter.lastUser = null;
+                return;
+            } else {
+                message.react("✅");
+                counter.increment();
+                counter.lastUser = message.author.id;
+            }
+        } else {
+            message.react("❌");
+            message.reply("Sorry buddy, you messed it up! Start at one again!");
+            counter.count = 0;
+            counter.lastUser = null;
+        }
     }
 });
 
