@@ -86,7 +86,6 @@ client.on(Events.MessageCreate, async (message) => {
                 message.reply("You can't count twice in a row!");
                 counter.count = 0;
                 counter.lastUser = null;
-                return;
             } else {
                 message.react("✅");
                 counter.increment();
