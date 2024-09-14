@@ -2,12 +2,59 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
 
+const mysql = require("mysql2");
+
 const { Count } = require("./count.js");
 const { checkChars } = require("./func.js");
 
 require("dotenv").config();
 
 TOKEN = process.env.TOKEN;
+
+const con = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+});
+
+con.connect(function (err) {
+    if (err) throw err;
+    console.log("Connected to MySQL!");
+
+    // Create database if it does not exist
+    con.query(
+        "CREATE DATABASE IF NOT EXISTS count_bot",
+        function (err, result) {
+            if (err) throw err;
+            console.log("Database count_bot checked/created!");
+
+            // Use the database
+            con.query("USE count_bot", function (err, result) {
+                if (err) throw err;
+                console.log("Using database count_bot!");
+
+                // Create the channels table if it does not exist
+                const createTableQuery = `
+                CREATE TABLE IF NOT EXISTS channels (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    channel_id VARCHAR(255) NOT NULL UNIQUE,
+                    count INT DEFAULT 0,
+                    last_user VARCHAR(255)
+                )
+            `;
+                con.query(createTableQuery, function (err, result) {
+                    if (err) throw err;
+                    console.log("Table channels checked/created!");
+                });
+            });
+        }
+    );
+});
+
+con.connect(function (err) {
+    if (err) throw err;
+    console.log("Connected to MySQL!");
+});
 
 const client = new Client({
     intents: [
